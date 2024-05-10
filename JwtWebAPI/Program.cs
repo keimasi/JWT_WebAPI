@@ -1,8 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using JwtWebAPI.Model;
+using JwtWebAPI.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = "Data Source=.; Initial Catalog=JwtWebApiDB; Integrated Security=True;TrustServerCertificate=True";
+builder.Services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(connectionString));
+
+
+#region JwtConfig
 
 //get Configs setting from appsettings.json
 var key = builder.Configuration["JwtConfig:Key"];
@@ -31,6 +40,11 @@ builder.Services.AddAuthentication(options =>
         options.SaveToken = true;
     });
 
+#endregion
+
+
+builder.Services.AddTransient<UserTokenRepository, UserTokenRepository>();
+builder.Services.AddTransient<UserRepository, UserRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

@@ -11,12 +11,13 @@ namespace JwtWebAPI.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var list = new Dictionary<string, string>();
-
-            list.Add("txt", "notepad.exe");
-            list.Add("bmp", "paint.exe");
-            list.Add("dib", "paint.exe");
-            list.Add("rtf", "wordpad.exe");
+            var list = new Dictionary<string, string>
+            {
+                { "txt", "notepad.exe" },
+                { "bmp", "paint.exe" },
+                { "dib", "paint.exe" },
+                { "rtf", "wordpad.exe" }
+            };
 
             return Ok(list);
         }
