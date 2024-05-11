@@ -33,7 +33,7 @@ namespace JwtWebAPI.Controllers
         {
             if (userName != "ali" || password != "123456") return Unauthorized();
 
-            var user = _userRepository.GetUser(3);
+            var user = _userRepository.GetUser(2);
 
             // ایجاد Claims
             var claims = new List<Claim>

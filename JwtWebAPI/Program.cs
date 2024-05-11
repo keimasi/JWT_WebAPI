@@ -4,12 +4,12 @@ using System.Text;
 using JwtWebAPI.Model;
 using JwtWebAPI.Services;
 using Microsoft.EntityFrameworkCore;
+using JwtWebAPI.Services.Validator;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = "Data Source=.; Initial Catalog=JwtWebApiDB; Integrated Security=True;TrustServerCertificate=True";
 builder.Services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(connectionString));
-
 
 #region JwtConfig
 
@@ -38,13 +38,21 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
         };
         options.SaveToken = true;
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = context =>
+            {
+                var tokenValidateService = context.HttpContext.RequestServices.GetService<ITokenValidator>();
+                return tokenValidateService.Execute(context);
+            }
+        };
     });
 
 #endregion
 
-
 builder.Services.AddTransient<UserTokenRepository, UserTokenRepository>();
 builder.Services.AddTransient<UserRepository, UserRepository>();
+builder.Services.AddTransient<ITokenValidator, TokenValidator>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
